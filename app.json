@@ -1,0 +1,16 @@
+{
+  "name": "releases-tracker",
+  "description": "Track releases of repositories in GitHub.",
+  "keywords": [
+    "GitHub",
+    "rss"
+  ],
+  "website": "https://github.com/Gerhut/releases-tracker#readme",
+  "repository": "https://github.com/Gerhut/releases-tracker",
+  "env": {
+    "REPOS": {
+      "description": "Set repositories you want to track, see value for example.",
+      "value": "jquery/jquery:twbs/bootstrap"
+    }
+  }
+}
