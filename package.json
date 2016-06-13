@@ -1,0 +1,35 @@
+{
+  "name": "releases-tracker",
+  "version": "1.0.0",
+  "description": "Track releases of repositories in GitHub.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "standard && mocha --require should test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gerhut/releases-tracker.git"
+  },
+  "keywords": [
+    "GitHub",
+    "atom"
+  ],
+  "author": "George Chung <Gerhut@GMail.com> (http://gerhut.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Gerhut/releases-tracker/issues"
+  },
+  "homepage": "https://github.com/Gerhut/releases-tracker#readme",
+  "devDependencies": {
+    "feedparser": "^1.1.4",
+    "mocha": "^2.5.3",
+    "should": "^9.0.2",
+    "standard": "^7.1.2",
+    "supertest": "^1.2.0"
+  },
+  "dependencies": {
+    "feed": "^0.3.0",
+    "superagent": "^2.0.0"
+  }
+}
