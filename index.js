@@ -48,7 +48,6 @@ const ReleasesTracker = module.exports = (repos, token) => (req, res) => {
     res.writeHead(500, err.message, {
       'Content-Type': 'text/plain'
     })
-    console.log(err)
     res.end(err.stack)
   })
 }

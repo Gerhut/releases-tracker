@@ -14,7 +14,7 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
     const middleware = ReleasesTracker([
       'jquery/jquery',
       'twbs/bootstrap'
-    ])
+    ], process.env.TOKEN)
 
     supertest(middleware)
       .get('/')
