@@ -7,26 +7,28 @@ const Feed = require('feed')
 
 const packageInfo = require('./package')
 
-const getRecentTag = (repo) => {
+const getRecentTag = (repo, token) => {
   const tag = { repo }
-  return superagent
+
+  const request = superagent
     .get(`https://api.github.com/repos/${repo}/tags`)
     .query({ per_page: 1 })
-    .then((res) => {
-      const tagInfo = res.body[0]
-      tag.name = tagInfo.name
-      tag.commit = tagInfo.commit.sha
-      return superagent.get(tagInfo.commit.url)
-    })
-    .then((res) => {
-      const commit = res.body.commit
-      tag.date = new Date(Date.parse(commit.committer.date))
-      return tag
-    })
+  if (token != null) request.set('Authorization', `token ${token}`)
+
+  return request.then((res) => {
+    const tagInfo = res.body[0]
+    tag.name = tagInfo.name
+    tag.commit = tagInfo.commit.sha
+    return superagent.get(tagInfo.commit.url)
+  }).then((res) => {
+    const commit = res.body.commit
+    tag.date = new Date(Date.parse(commit.committer.date))
+    return tag
+  })
 }
 
-const ReleasesTracker = module.exports = (repos) => (req, res) => {
-  Promise.all(repos.map(getRecentTag)).then((tags) => {
+const ReleasesTracker = module.exports = (repos, token) => (req, res) => {
+  Promise.all(repos.map((repo) => getRecentTag(repo, token))).then((tags) => {
     const feed = new Feed({
       title: packageInfo.name,
       description: packageInfo.description,
@@ -46,6 +48,7 @@ const ReleasesTracker = module.exports = (repos) => (req, res) => {
     res.writeHead(500, err.message, {
       'Content-Type': 'text/plain'
     })
+    console.log(err)
     res.end(err.stack)
   })
 }
@@ -53,7 +56,8 @@ const ReleasesTracker = module.exports = (repos) => (req, res) => {
 if (require.main === module) {
   const http = require('http')
   const repos = process.env.REPOS.split(':')
-  const middleware = ReleasesTracker(repos)
+  const token = process.env.TOKEN
+  const middleware = ReleasesTracker(repos, token)
   const server = http.createServer(middleware)
   server.listen(process.env.PORT, () => {
     console.log(`Server listenning on ${server.address()}`)
