@@ -35,7 +35,7 @@ const ReleasesTracker = module.exports = (repos) => (req, res) => {
     tags.forEach((tag) => feed.addItem({
       title: `${tag.repo} ${tag.name} released`,
       link: `https://github.com/${tag.repo}/releases/tag/${tag.name}`,
-      guid: `https://github.com/${tag.repo}/commit/${tag.commit.sha}`,
+      guid: `https://github.com/${tag.repo}/commit/${tag.commit}`,
       date: tag.date
     }))
     res.writeHead(200, {
