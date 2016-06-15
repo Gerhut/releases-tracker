@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Gerhut/releases-tracker#readme",
   "devDependencies": {
-    "feedparser": "^1.1.4",
+    "htmlparser": "^1.7.7",
     "mocha": "^2.5.3",
     "should": "^9.0.2",
     "standard": "^7.1.2",
