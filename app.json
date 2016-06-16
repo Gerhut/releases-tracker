@@ -11,6 +11,10 @@
     "REPOS": {
       "description": "Set repositories you want to track, see value for example.",
       "value": "jquery/jquery:twbs/bootstrap"
+    },
+    "TOKEN": {
+      "description": "GitHub personal access token.",
+      "required": false
     }
   }
 }
