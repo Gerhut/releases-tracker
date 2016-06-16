@@ -32,6 +32,8 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
             item.title.should.be.a.String().and.match(/jquery\/jquery|twbs\/bootstrap/)
             item.pubDate.should.be.a.Date()
           })
+
+          feed.items[0].pubDate.should.be.above(feed.items[1].pubDate)
           done()
         })
         const parser = new htmlparser.Parser(handler)

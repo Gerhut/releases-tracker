@@ -34,6 +34,7 @@ const ReleasesTracker = module.exports = (repos, token) => (req, res) => {
       description: packageInfo.description,
       link: packageInfo.homepage
     })
+    tags.sort((tagA, tagB) => tagA.date > tagB.date ? -1 : tagA.date < tagB.date ? 1 : 0)
     tags.forEach((tag) => feed.addItem({
       title: `${tag.repo} ${tag.name} released`,
       link: `https://github.com/${tag.repo}/releases/tag/${tag.name}`,
