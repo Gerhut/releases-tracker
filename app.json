@@ -8,9 +8,21 @@
   "website": "https://github.com/Gerhut/releases-tracker#readme",
   "repository": "https://github.com/Gerhut/releases-tracker",
   "env": {
+    "TITLE": {
+      "description": "Feed title",
+      "value": "Releases Tracker"
+    },
+    "DESCRIPTION": {
+      "description": "Feed description",
+      "value": "Track releases of repositories in GitHub."
+    },
+    "LINK": {
+      "description": "Feed link",
+      "value": "https://github.com/Gerhut/releases-tracker"
+    },
     "REPOS": {
       "description": "Set repositories you want to track, see value for example.",
-      "value": "jquery/jquery:twbs/bootstrap"
+      "value": "facebook/react:twbs/bootstrap"
     },
     "TOKEN": {
       "description": "GitHub personal access token.",
