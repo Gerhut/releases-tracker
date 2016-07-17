@@ -11,10 +11,14 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
   function (done) {
     this.timeout(10000)
 
-    const middleware = ReleasesTracker([
-      'jquery/jquery',
-      'twbs/bootstrap'
-    ], process.env.TOKEN)
+    const title = 'Releases tracker test'
+    const description = 'Releases tracker description'
+    const link = 'http://www.example.com/releases-tracker'
+
+    const middleware = ReleasesTracker({
+      title, description, link,
+      repos: [ 'facebook/react', 'twbs/bootstrap' ]
+    })
 
     supertest(middleware)
       .get('/')
@@ -29,7 +33,7 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
           feed.should.have.properties('title', 'link')
           feed.items.forEach((item) => {
             item.should.have.properties('title', 'id', 'pubDate')
-            item.title.should.be.a.String().and.match(/jquery\/jquery|twbs\/bootstrap/)
+            item.title.should.be.a.String().and.match(/facebook\/react|twbs\/bootstrap/)
             item.pubDate.should.be.a.Date()
           })
 

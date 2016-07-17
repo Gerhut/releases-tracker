@@ -1,6 +1,6 @@
 {
   "name": "releases-tracker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Track releases of repositories in GitHub.",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,9 @@
     "url": "https://github.com/Gerhut/releases-tracker/issues"
   },
   "homepage": "https://github.com/Gerhut/releases-tracker#readme",
+  "engines": {
+    "node": "^6.0.0"
+  },
   "devDependencies": {
     "htmlparser": "^1.7.7",
     "mocha": "^2.5.3",

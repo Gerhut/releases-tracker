@@ -5,42 +5,41 @@
 const superagent = require('superagent')
 const Feed = require('feed')
 
-const packageInfo = require('./package')
+const getLatestRelease = ({ repo, token }) => {
+  const url = `https://api.github.com/repos/${repo}/releases`
+  const request = superagent.get(url, { per_page: 1 })
 
-const getRecentTag = (repo, token) => {
-  const tag = { repo }
+  if (token != null) {
+    request.set('Authorization', `token ${token}`)
+  }
 
-  const request = superagent
-    .get(`https://api.github.com/repos/${repo}/tags`)
-    .query({ per_page: 1 })
-  if (token != null) request.set('Authorization', `token ${token}`)
-
-  return request.then((res) => {
-    const tagInfo = res.body[0]
-    tag.name = tagInfo.name
-    tag.commit = tagInfo.commit.sha
-    return superagent.get(tagInfo.commit.url)
-  }).then((res) => {
-    const commit = res.body.commit
-    tag.date = new Date(Date.parse(commit.committer.date))
-    return tag
-  })
+  return request.then((response) => response.body[0])
 }
 
-const ReleasesTracker = module.exports = (repos, token) => (req, res) => {
-  Promise.all(repos.map((repo) => getRecentTag(repo, token))).then((tags) => {
+const repoReleaseToItem = ({ repo, release }) => ({
+  title: `${repo} ${release.name}`,
+  link: release.html_url,
+  guid: release.html_url,
+  date: new Date(release.created_at),
+  content: release.body
+})
+
+const ReleasesTracker = ({ title, description, link, repos, token }) => (req, res) => {
+  const items = repos.map(
+    (repo) => getLatestRelease({ repo, token }).then(
+      (release) => repoReleaseToItem({ repo, release })
+    )
+  )
+
+  Promise.all(items).then((items) => {
+    items.sort((itemA, itemB) => itemA.date - itemB.date).reverse()
+
     const feed = new Feed({
-      title: packageInfo.name,
-      description: packageInfo.description,
-      link: packageInfo.homepage
+      title, description, link,
+      updated: new Date(items[0].date)
     })
-    tags.sort((tagA, tagB) => tagA.date > tagB.date ? -1 : tagA.date < tagB.date ? 1 : 0)
-    tags.forEach((tag) => feed.addItem({
-      title: `${tag.repo} ${tag.name} released`,
-      link: `https://github.com/${tag.repo}/releases/tag/${tag.name}`,
-      guid: `https://github.com/${tag.repo}/commit/${tag.commit}`,
-      date: tag.date
-    }))
+    items.forEach((item) => feed.addItem(item))
+
     res.writeHead(200, {
       'Content-Type': 'application/rss+xml'
     })
@@ -53,13 +52,21 @@ const ReleasesTracker = module.exports = (repos, token) => (req, res) => {
   })
 }
 
+module.exports = ReleasesTracker
+
 if (require.main === module) {
   const http = require('http')
+
+  const title = process.env.TITLE
+  const description = process.env.DESCRIPTION
+  const link = process.env.LINK
   const repos = process.env.REPOS.split(':')
   const token = process.env.TOKEN
-  const middleware = ReleasesTracker(repos, token)
+
+  const middleware = ReleasesTracker({ title, description, link, repos, token })
   const server = http.createServer(middleware)
+
   server.listen(process.env.PORT, () => {
-    console.log(`Server listenning on ${server.address()}`)
+    console.log('Server listenning on', server.address())
   })
 }
