@@ -25,10 +25,10 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
       .expect(200)
       .expect('Content-Type', 'application/rss+xml')
       .end((err, res) => {
-        if (err) throw err
+        if (err) return done(err)
 
         const handler = new htmlparser.RssHandler((err, feed) => {
-          if (err) throw err
+          if (err) return done(err)
 
           feed.should.have.properties('title', 'link')
           feed.items.forEach((item) => {

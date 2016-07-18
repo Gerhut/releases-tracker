@@ -5,33 +5,35 @@
 const superagent = require('superagent')
 const Feed = require('feed')
 
-const getLatestRelease = ({ repo, token }) => {
+const getReleases = ({ repo, token }) => {
   const url = `https://api.github.com/repos/${repo}/releases`
-  const request = superagent.get(url, { per_page: 1 })
+  const request = superagent.get(url)
 
   if (token != null) {
     request.set('Authorization', `token ${token}`)
   }
 
-  return request.then((response) => response.body[0])
+  return request.then((response) => response.body)
 }
 
-const repoReleaseToItem = ({ repo, release }) => ({
-  title: `${repo} ${release.name}`,
+const getItem = ({ release, repo }) => ({
+  title: `${repo} ${release.name || release.tag_name}`,
   link: release.html_url,
   guid: release.html_url,
-  date: new Date(release.created_at),
-  content: release.body
+  date: new Date(release.created_at)
 })
 
 const ReleasesTracker = ({ title, description, link, repos, token }) => (req, res) => {
-  const items = repos.map(
-    (repo) => getLatestRelease({ repo, token }).then(
-      (release) => repoReleaseToItem({ repo, release })
+  const itemLists = repos.map(
+    (repo) => getReleases({ repo, token }).then(
+      (releases) => releases.map(
+        (release) => getItem({ release, repo })
+      )
     )
   )
 
-  Promise.all(items).then((items) => {
+  Promise.all(itemLists).then((itemLists) => {
+    const items = itemLists.reduce((itemListA, itemListB) => itemListA.concat(itemListB))
     items.sort((itemA, itemB) => itemA.date - itemB.date).reverse()
 
     const feed = new Feed({
