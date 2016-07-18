@@ -34,7 +34,7 @@ const ReleasesTracker = ({ title, description, link, repos, token }) => (req, re
 
   Promise.all(itemLists).then((itemLists) => {
     const items = itemLists.reduce((itemListA, itemListB) => itemListA.concat(itemListB))
-    items.sort((itemA, itemB) => itemA.date - itemB.date).reverse()
+    items.sort((itemA, itemB) => itemA.date - itemB.date).reverse().splice(10)
 
     const feed = new Feed({
       title, description, link,
