@@ -19,7 +19,7 @@ const getReleases = ({ repo, token }) => {
 const getItem = ({ release, repo }) => ({
   title: `${repo} ${release.name || release.tag_name}`,
   link: release.html_url,
-  guid: release.html_url,
+  guid: release.url,
   date: new Date(release.created_at)
 })
 
