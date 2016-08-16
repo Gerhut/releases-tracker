@@ -3,7 +3,7 @@
 /* eslint-env mocha */
 
 const supertest = require('supertest')
-const htmlparser = require('htmlparser')
+const FeedParser = require('feedparser')
 
 const ReleasesTracker = require('.')
 
@@ -20,27 +20,26 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
       repos: [ 'facebook/react', 'twbs/bootstrap' ]
     })
 
+    const feedparser = new FeedParser()
+
     supertest(middleware)
       .get('/')
+      .on('error', done)
       .expect(200)
       .expect('Content-Type', 'application/rss+xml')
-      .end((err, res) => {
-        if (err) return done(err)
+      .pipe(feedparser)
+      .on('error', done)
+      .on('readable', () => {
+        feedparser.meta.should.have.properties('title', 'link')
 
-        const handler = new htmlparser.RssHandler((err, feed) => {
-          if (err) return done(err)
-
-          feed.should.have.properties('title', 'link')
-          feed.items.forEach((item) => {
-            item.should.have.properties('title', 'id', 'pubDate')
-            item.title.should.be.a.String().and.match(/facebook\/react|twbs\/bootstrap/)
-            item.pubDate.should.be.a.Date()
-          })
-
-          feed.items[0].pubDate.should.be.above(feed.items[1].pubDate)
-          done()
-        })
-        const parser = new htmlparser.Parser(handler)
-        parser.parseComplete(res.text)
+        let lastItem, item
+        while ((item = feedparser.read())) {
+          item.should.have.properties('title', 'guid', 'pubdate')
+          item.title.should.be.a.String().and.match(/facebook\/react|twbs\/bootstrap/)
+          item.pubdate.should.be.a.Date()
+          if (lastItem) item.pubdate.should.be.below(lastItem.pubdate)
+          lastItem = item
+        }
       })
+      .on('end', done)
   })
