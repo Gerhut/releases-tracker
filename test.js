@@ -35,7 +35,7 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
         let lastItem, item
         while ((item = feedparser.read())) {
           item.should.have.properties('title', 'guid', 'pubdate')
-          item.title.should.be.a.String().and.match(/facebook\/react|twbs\/bootstrap/)
+          item.title.should.be.a.String().and.match(/^react|^bootstrap/)
           item.pubdate.should.be.a.Date()
           if (lastItem) item.pubdate.should.be.below(lastItem.pubdate)
           lastItem = item
