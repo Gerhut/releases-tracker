@@ -11,14 +11,7 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
   function (done) {
     this.timeout(10000)
 
-    const title = 'Releases tracker test'
-    const description = 'Releases tracker description'
-    const link = 'http://www.example.com/releases-tracker'
-
     const middleware = ReleasesTracker({
-      title,
-      description,
-      link,
       repos: [ 'facebook/react', 'twbs/bootstrap' ]
     })
 

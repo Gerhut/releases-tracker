@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "feed": "^0.3.0",
-    "superagent": "^2.3.0"
+    "lodash": "^4.16.1",
+    "request": "^2.75.0",
+    "request-promise": "^4.1.1"
   }
 }

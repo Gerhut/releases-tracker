@@ -2,40 +2,42 @@
 
 'use strict'
 
-const superagent = require('superagent')
+const _ = require('lodash')
 const Feed = require('feed')
+const request = require('request-promise')
 
-const getReleases = ({ repo, token }) => {
+const PACKAGE = require('./package')
+
+const getReleases = (repo) => {
   const url = `https://api.github.com/repos/${repo}/releases`
-  const request = superagent.get(url)
-
-  if (token != null) {
-    request.set('Authorization', `token ${token}`)
-  }
-
-  return request.then((response) => response.body)
+  return request(url, {
+    headers: {
+      'user-agent': `${PACKAGE.name}/${PACKAGE.version}`
+    },
+    json: true
+  })
 }
 
-const getItem = ({ release, repo }) => ({
+const createFeedItem = ({ release, repo }) => ({
   title: `${repo.split('/')[1]} ${release.name || release.tag_name}`,
   link: release.html_url,
   guid: release.url,
   date: new Date(release.created_at)
 })
 
-const ReleasesTracker = ({ title, description, link, repos, token }) => (req, res) => {
-  const itemLists = repos.map(
-    (repo) => getReleases({ repo, token }).then(
-      (releases) => releases.map(
-        (release) => getItem({ release, repo })
-      )
-    )
-  )
-
-  Promise.all(itemLists).then((itemLists) => {
-    const items = itemLists.reduce((itemListA, itemListB) => itemListA.concat(itemListB))
-    items.sort((itemA, itemB) => itemA.date - itemB.date).reverse().splice(10)
-
+const ReleasesTracker = ({
+  title = PACKAGE.name,
+  description = PACKAGE.description,
+  link = PACKAGE.homepage,
+  repos = []
+}) => (req, res) =>
+  Promise.all(_.map(repos,
+    (repo) => getReleases(repo).then(
+      (releases) => _.map(releases,
+        (release) => createFeedItem({ release, repo })))))
+  .then(_.flatten)
+  .then((items) => _(items).sortBy('date').reverse().take(10).value())
+  .then((items) => {
     const feed = new Feed({
       title,
       description,
@@ -48,13 +50,11 @@ const ReleasesTracker = ({ title, description, link, repos, token }) => (req, re
       'Content-Type': 'application/rss+xml'
     })
     res.end(feed.render())
-  }).catch((err) => {
-    res.writeHead(500, err.message, {
-      'Content-Type': 'text/plain'
-    })
+  })
+  .catch((err) => {
+    res.writeHead(500, err.message, { 'content-type': 'text/plain' })
     res.end(err.stack)
   })
-}
 
 module.exports = ReleasesTracker
 
@@ -65,9 +65,8 @@ if (require.main === module) {
   const description = process.env.DESCRIPTION
   const link = process.env.LINK
   const repos = process.env.REPOS.split(':')
-  const token = process.env.TOKEN
 
-  const middleware = ReleasesTracker({ title, description, link, repos, token })
+  const middleware = ReleasesTracker({ title, description, link, repos })
   const server = http.createServer(middleware)
 
   server.listen(process.env.PORT, () => {
