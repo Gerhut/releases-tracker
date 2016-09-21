@@ -36,6 +36,7 @@
     "feed": "^0.3.0",
     "ioredis": "^2.3.0",
     "lodash": "^4.16.1",
+    "marked": "^0.3.6",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
   },

@@ -6,6 +6,7 @@ const co = require('co')
 const _ = require('lodash')
 const Feed = require('feed')
 const Redis = require('ioredis')
+const marked = require('marked')
 const request = require('request-promise')
 
 const PACKAGE = require('./package')
@@ -50,7 +51,8 @@ const ReleasesTracker = ({
       title: `${repo.split('/').pop()} ${release.name || release.tag_name}`,
       link: release.html_url,
       guid: release.url,
-      date: new Date(release.created_at)
+      date: new Date(release.created_at),
+      content: marked(release.body)
     }))
   })).flatten().sortBy((feedItem) => -feedItem.date).take(10).value()
 
