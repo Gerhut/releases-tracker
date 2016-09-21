@@ -24,5 +24,8 @@
       "description": "Set repositories you want to track, see value for example.",
       "value": "facebook/react:twbs/bootstrap"
     }
-  }
+  },
+  "addons": [
+    "heroku-redis"
+  ]
 }

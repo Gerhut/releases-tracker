@@ -12,7 +12,8 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
     this.timeout(10000)
 
     const middleware = ReleasesTracker({
-      repos: [ 'facebook/react', 'twbs/bootstrap' ]
+      repos: [ 'facebook/react' ],
+      redisUrl: 'redis://127.0.0.1'
     })
 
     const feedparser = new FeedParser()

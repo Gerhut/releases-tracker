@@ -32,9 +32,14 @@
     "supertest": "^2.0.0"
   },
   "dependencies": {
+    "co": "^4.6.0",
     "feed": "^0.3.0",
+    "ioredis": "^2.3.0",
     "lodash": "^4.16.1",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
+  },
+  "optionalDependencies": {
+    "hiredis": "^0.5.0"
   }
 }
