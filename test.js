@@ -16,7 +16,9 @@ it('should generate RSS feed meet the requirements of IFTTT Feed Channel',
     const link = 'http://www.example.com/releases-tracker'
 
     const middleware = ReleasesTracker({
-      title, description, link,
+      title,
+      description,
+      link,
       repos: [ 'facebook/react', 'twbs/bootstrap' ]
     })
 

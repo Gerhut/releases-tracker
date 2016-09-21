@@ -37,7 +37,9 @@ const ReleasesTracker = ({ title, description, link, repos, token }) => (req, re
     items.sort((itemA, itemB) => itemA.date - itemB.date).reverse().splice(10)
 
     const feed = new Feed({
-      title, description, link,
+      title,
+      description,
+      link,
       updated: new Date(items[0].date)
     })
     items.forEach((item) => feed.addItem(item))
