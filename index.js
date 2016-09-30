@@ -1,76 +1,76 @@
 #!/usr/bin/env node
 
-'use strict'
-
-const co = require('co')
 const _ = require('lodash')
-const Feed = require('feed')
-const Redis = require('ioredis')
-const marked = require('marked')
-const request = require('request-promise')
+const cheerio = require('cheerio')
+const request = require('superagent')
 
-const PACKAGE = require('./package')
+const pkg = require('./package')
 
 const ReleasesTracker = ({
-  title = PACKAGE.name,
-  description = PACKAGE.description,
-  link = PACKAGE.homepage,
-  repos = [],
-  redisUrl
-}) => (req, res) => co(function * () {
-  const redis = redisUrl != null ? new Redis(redisUrl) : null
+  title = pkg.name,
+  repos = []
+}) => (request, response) => Promise.all(repos.map(getEntryList)).then((entryLists) => {
+  const fullURL = getFullURL(request)
+  const entries = _(entryLists).flatten().sortBy((entry) => {
+    const $updated = cheerio(entry).find('updated')
+    return -new Date($updated.text())
+  }).take(10).value()
+  const updated = cheerio(cheerio(entries).find('updated')[0]).text()
+  const $ = cheerio.load(`<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>${fullURL}</id>
+  <link type="application/atom+xml" rel="self" href="${fullURL}"/>
+  <title>${title}</title>
+  <updated>${updated}</updated>
+</feed>`, { xmlMode: true })
 
-  const getRepoReleases = function * (repo) {
-    const uri = `https://api.github.com/repos/${repo}/releases`
-    const headers = { 'user-agent': `${PACKAGE.name}/${PACKAGE.version}` }
+  $('feed').append(entries)
+  response.writeHead(200, {
+    'Content-Type': 'application/atom+xml; charset=utf-8'
+  })
+  response.end($.xml())
+}).catch((error) => {
+  console.error(error)
+  if (!response.headerSent) {
+    response.writeHead(500, {
+      'Content-Type': 'text/plain; charset=utf-8'
+    })
+  }
+  if (!response.finished) {
+    response.end(error.stack)
+  }
+})
 
-    const etag = redis && (yield redis.get(`${repo}:etag`))
-    if (etag) headers['if-none-match'] = etag
+const getEntryList = (repo) => request(`https://github.com/${repo}/releases.atom`)
+  .buffer()
+  .then(({ text }) => {
+    const $ = cheerio.load(text, { xmlMode: true })
+    const $entries = $('entry')
+    const repoName = repo.match(/^.+\/(.+)$/)[1]
+    $entries.find('title').text((index, text) => `${repoName} ${text}`)
+    $entries.find('link').attr('href', (index, href) => `https://github.com${href}`)
+    return $entries.toArray()
+  })
 
-    try {
-      const response = yield request({ uri, headers, resolveWithFullResponse: true })
-      if (redis) {
-        redis.set(`${repo}:body`, response.body)
-        redis.set(`${repo}:etag`, response.headers.etag)
-      }
-      return JSON.parse(response.body)
-    } catch (error) {
-      if (error.statusCode === 304) {
-        const body = yield redis.get(`${repo}:body`)
-        return JSON.parse(body)
-      } else {
-        throw error
-      }
-    }
+const getFullURL = ({socket, headers, url}) => {
+  let protocol
+  if (socket.encrypted) {
+    protocol = 'https'
+  } else if ('x-forwarded-proto' in headers) {
+    protocol = headers['x-forwarded-proto']
+  } else {
+    protocol = 'http'
   }
 
-  const feedItems = _(yield _.map(repos, function * (repo) {
-    const releases = yield getRepoReleases(repo)
+  let host
+  if ('x-forwarded-host' in headers) {
+    host = headers['x-forwarded-host'].split(',')[0]
+  } else {
+    host = headers['host']
+  }
 
-    return _.map(releases, (release) => ({
-      title: `${repo.split('/').pop()} ${release.name || release.tag_name}`,
-      link: release.html_url,
-      guid: release.url,
-      date: new Date(release.created_at),
-      content: marked(release.body)
-    }))
-  })).flatten().sortBy((feedItem) => -feedItem.date).take(10).value()
-
-  const feed = new Feed({
-    title,
-    description,
-    link,
-    updated: new Date(feedItems[0].date)
-  })
-  feedItems.forEach((feedItem) => feed.addItem(feedItem))
-
-  res.writeHead(200, { 'content-type': 'application/rss+xml' })
-  res.end(feed.render())
-}).catch((err) => {
-  console.error(err)
-  res.writeHead(500, err.message, { 'content-type': 'text/plain' })
-  res.end(err.stack)
-})
+  return `${protocol}://${host}${url}`
+}
 
 module.exports = ReleasesTracker
 
@@ -78,12 +78,9 @@ if (require.main === module) {
   const http = require('http')
 
   const title = process.env.TITLE
-  const description = process.env.DESCRIPTION
-  const link = process.env.LINK
   const repos = process.env.REPOS.split(':')
-  const redisUrl = process.env.REDIS_URL
 
-  const middleware = ReleasesTracker({ title, description, link, repos, redisUrl })
+  const middleware = ReleasesTracker({ title, repos })
   const server = http.createServer(middleware)
 
   server.listen(process.env.PORT, () => {

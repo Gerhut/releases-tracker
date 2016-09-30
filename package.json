@@ -1,7 +1,7 @@
 {
   "name": "releases-tracker",
-  "version": "1.3.0",
-  "description": "Track releases of repositories in GitHub.",
+  "version": "2.0.0",
+  "description": "Track releases of repositories on GitHub.",
   "main": "index.js",
   "scripts": {
     "start": "node .",
@@ -13,7 +13,7 @@
   },
   "keywords": [
     "GitHub",
-    "rss"
+    "feed"
   ],
   "author": "George Chung <Gerhut@GMail.com> (http://gerhut.me)",
   "license": "MIT",
@@ -25,22 +25,14 @@
     "node": "^6.0.0"
   },
   "devDependencies": {
-    "feedparser": "^1.1.4",
     "mocha": "^3.0.2",
     "should": "^11.1.0",
     "standard": "^8.1.0",
     "supertest": "^2.0.0"
   },
   "dependencies": {
-    "co": "^4.6.0",
-    "feed": "^0.3.0",
-    "ioredis": "^2.3.0",
+    "cheerio": "^0.22.0",
     "lodash": "^4.16.1",
-    "marked": "^0.3.6",
-    "request": "^2.75.0",
-    "request-promise": "^4.1.1"
-  },
-  "optionalDependencies": {
-    "hiredis": "^0.5.0"
+    "superagent": "^2.3.0"
   }
 }

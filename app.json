@@ -1,31 +1,20 @@
 {
   "name": "releases-tracker",
-  "description": "Track releases of repositories in GitHub.",
+  "description": "Track releases of repositories on GitHub.",
   "keywords": [
     "GitHub",
-    "rss"
+    "feed"
   ],
   "website": "https://github.com/Gerhut/releases-tracker#readme",
   "repository": "https://github.com/Gerhut/releases-tracker",
   "env": {
     "TITLE": {
-      "description": "Feed title",
+      "description": "Title of atom feed.",
       "value": "Releases Tracker"
-    },
-    "DESCRIPTION": {
-      "description": "Feed description",
-      "value": "Track releases of repositories in GitHub."
-    },
-    "LINK": {
-      "description": "Feed link",
-      "value": "https://github.com/Gerhut/releases-tracker"
     },
     "REPOS": {
       "description": "Set repositories you want to track, see value for example.",
       "value": "facebook/react:twbs/bootstrap"
     }
-  },
-  "addons": [
-    "heroku-redis"
-  ]
+  }
 }
