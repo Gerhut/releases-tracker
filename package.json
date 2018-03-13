@@ -1,0 +1,47 @@
+{
+  "name": "releases-tracker",
+  "version": "0.0.0",
+  "description": "Track releases from several repositories or registries.",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "dev": "concurrently --kill-others 'tsc --watch' 'nodemon --require dotenv/config .'",
+    "start": "node --require dotenv/config .",
+    "test": "tslint --project ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gerhut/releases-tracker.git"
+  },
+  "author": "George Chung <Gerhut@GMail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Gerhut/releases-tracker/issues"
+  },
+  "homepage": "https://github.com/Gerhut/releases-tracker#readme",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "koa": "^2.5.0",
+    "node-fetch": "^2.1.1",
+    "xmlbuilder": "^9.0.7"
+  },
+  "devDependencies": {
+    "@types/debug": "0.0.30",
+    "@types/koa": "^2.0.44",
+    "@types/node-fetch": "^1.6.7",
+    "@types/xmlbuilder": "0.0.32",
+    "concurrently": "^3.5.1",
+    "dotenv": "^5.0.1",
+    "husky": "^0.14.3",
+    "nodemon": "^1.17.1",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build"
+    }
+  }
+}
