@@ -1,7 +1,7 @@
 import { URL } from "url";
 import GitHubRelease from "./releases/GitHubRelease";
 import NpmRelease from "./releases/NpmRelease";
-import PypiRelease from './releases/PypiRelease';
+import PypiRelease from "./releases/PypiRelease";
 
 export default {
   build(uriString: string) {
