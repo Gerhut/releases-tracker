@@ -22,7 +22,7 @@ exports.app = new koa_1.default();
 exports.app.use(async (context) => {
     context.assert(context.method === "GET", 405);
     context.assert(context.url === "/", 404);
-    const fetchPromises = releases.map((release) => release.fetch());
+    const fetchPromises = releases.map((release) => release.fetch().catch(() => null));
     await Promise.all(fetchPromises);
     const atomString = Release_1.default.toAtomString(releases, { link: context.href });
     context.type = "atom";
