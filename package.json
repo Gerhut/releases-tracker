@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "precommit": "npm run build",
+    "precommit": "npm run build && git add dist",
     "prepush": "npm test",
     "dev": "concurrently --kill-others 'tsc --watch' 'nodemon --require dotenv/config .'",
     "start": "node --require dotenv/config .",
