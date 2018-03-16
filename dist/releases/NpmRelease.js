@@ -15,10 +15,7 @@ class NpmRelease extends Release_1.default {
         this.author = object.author ? object.author.name : object.maintainers[0].name;
         this.link = `https://www.npmjs.com/package/${object.name}`;
         this.id = `${this.link}#${version}`;
-        this.updated = new Date(object.time.modified);
-    }
-    get repositoryName() {
-        return this.name.split("/", 2)[1];
+        this.updated = new Date(object.time[version]);
     }
 }
 exports.default = NpmRelease;
