@@ -6,7 +6,7 @@
   "env": {
     "RELEASES": {
       "description": "Set repositories you want to track, see value for example.",
-      "value": "github:atom/atom;npm:react"
+      "value": "github:atom/atom npm:react"
     }
   }
 }
