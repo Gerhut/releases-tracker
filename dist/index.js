@@ -8,7 +8,7 @@ const koa_1 = __importDefault(require("koa"));
 const Release_1 = __importDefault(require("./Release"));
 const ReleaseFactory_1 = __importDefault(require("./ReleaseFactory"));
 const log = debug_1.default("releases-tracker");
-const releaseNames = (process.env.RELEASES || "").split(";");
+const releaseNames = (process.env.RELEASES || "").split(" ");
 const releases = [];
 for (const releaseName of releaseNames) {
     try {

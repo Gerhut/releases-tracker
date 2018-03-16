@@ -5,7 +5,7 @@ import ReleaseFactory from "./ReleaseFactory";
 
 const log = debug("releases-tracker");
 
-const releaseNames = (process.env.RELEASES || "").split(";");
+const releaseNames = (process.env.RELEASES || "").split(" ");
 const releases: Release[] = [];
 for (const releaseName of releaseNames) {
   try {
