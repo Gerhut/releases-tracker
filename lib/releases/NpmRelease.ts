@@ -4,7 +4,7 @@ import Release from "../Release";
 export default class GitHubRelease extends Release {
 
   protected async _fetch() {
-    const url = `http://registry.npmjs.org/${this.name}`;
+    const url = `http://registry.npmjs.org/${this.name.replace(/\//g, "%2F")}`;
     const response = await fetch(url);
     const object = await response.json();
 
