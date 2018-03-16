@@ -1,6 +1,6 @@
 {
   "name": "releases-tracker",
-  "version": "0.0.0",
+  "version": "3.0.0",
   "description": "Track releases from several repositories or registries.",
   "main": "dist/index.js",
   "scripts": {
