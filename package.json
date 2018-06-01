@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/koa": "^2.0.44",
-    "@types/node-fetch": "^1.6.7",
+    "@types/node-fetch": "^2.1.0",
     "@types/xmlbuilder": "0.0.32",
     "concurrently": "^3.5.1",
     "dotenv": "^5.0.1",
