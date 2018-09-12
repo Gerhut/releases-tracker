@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Gerhut/releases-tracker#readme",
   "dependencies": {
-    "debug": "^4.0.0",
+    "debug": "^4.0.1",
     "koa": "^2.5.0",
     "node-fetch": "^2.1.1",
     "xmlbuilder": "^10.0.0"
