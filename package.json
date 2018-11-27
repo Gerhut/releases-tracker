@@ -23,22 +23,22 @@
   },
   "homepage": "https://github.com/Gerhut/releases-tracker#readme",
   "dependencies": {
-    "dotenv": "^6.0.0",
     "debug": "^4.0.0",
-    "koa": "^2.5.0",
-    "node-fetch": "^2.1.1",
+    "dotenv": "^6.0.0",
+    "koa": "^2.6.2",
+    "node-fetch": "^2.3.0",
     "xmlbuilder": "^10.0.0"
   },
   "devDependencies": {
     "@types/debug": "0.0.31",
-    "@types/koa": "^2.0.44",
-    "@types/node-fetch": "^2.1.0",
+    "@types/koa": "^2.0.47",
+    "@types/node-fetch": "^2.1.4",
     "@types/xmlbuilder": "0.0.33",
-    "concurrently": "^4.0.0",
+    "concurrently": "^4.1.0",
     "husky": "^0.14.3",
-    "nodemon": "^1.18.4",
+    "nodemon": "^1.18.6",
     "rimraf": "^2.6.2",
-    "tslint": "^5.9.1",
-    "typescript": "^2.7.2"
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
   }
 }
