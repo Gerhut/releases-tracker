@@ -6,8 +6,6 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "precommit": "npm run build && git add dist",
-    "prepush": "npm test",
     "dev": "concurrently --kill-others 'tsc --watch' 'nodemon --require dotenv/config .'",
     "start": "node --require dotenv/config .",
     "test": "tslint --project ."
@@ -35,7 +33,7 @@
     "@types/node-fetch": "^2.1.4",
     "@types/xmlbuilder": "0.0.33",
     "concurrently": "^4.1.0",
-    "husky": "^0.14.3",
+    "husky": "^1.2.0",
     "nodemon": "^1.18.6",
     "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
