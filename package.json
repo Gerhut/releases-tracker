@@ -28,7 +28,7 @@
     "xmlbuilder": "^10.0.0"
   },
   "devDependencies": {
-    "@types/debug": "4.1.0",
+    "@types/debug": "^4.1.1",
     "@types/koa": "^2.0.47",
     "@types/node-fetch": "^2.1.4",
     "@types/xmlbuilder": "0.0.33",
