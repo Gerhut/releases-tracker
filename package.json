@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/debug": "^4.1.1",
     "@types/koa": "^2.0.47",
-    "@types/node-fetch": "^2.1.4",
+    "@types/node-fetch": "^2.3.3",
     "concurrently": "^4.1.0",
     "husky": "^2.0.0",
     "nodemon": "^1.18.10",
