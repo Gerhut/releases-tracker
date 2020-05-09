@@ -7,6 +7,9 @@ const debug_1 = __importDefault(require("debug"));
 const xmlbuilder_1 = __importDefault(require("xmlbuilder"));
 const log = debug_1.default("releases-tracker");
 class Release {
+    constructor(name) {
+        this.name = name;
+    }
     static toAtomString(releases, { link = "https://github.com/Gerhut/releases-tracker", title = "Releases Tracker", } = {}) {
         const feedElement = xmlbuilder_1.default.create("feed", { encoding: "utf-8" });
         feedElement.attribute("xmlns", "http://www.w3.org/2005/Atom");
@@ -35,9 +38,6 @@ class Release {
         return feedElement.end({
             pretty: process.env.NODE_ENV !== "production",
         });
-    }
-    constructor(name) {
-        this.name = name;
     }
     async fetch() {
         if (this.fetchPromise === undefined) {
