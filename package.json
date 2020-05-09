@@ -8,7 +8,8 @@
     "build": "tsc",
     "dev": "concurrently --kill-others 'tsc --watch' 'nodemon --require dotenv/config .'",
     "start": "node --require dotenv/config .",
-    "test": "tslint --project ."
+    "pretest": "tslint --project .",
+    "test": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
